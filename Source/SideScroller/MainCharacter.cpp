@@ -3,6 +3,8 @@
 
 #include "MainCharacter.h"
 
+
+
 // Sets default values
 AMainCharacter::AMainCharacter()
 {
@@ -24,6 +26,8 @@ AMainCharacter::AMainCharacter()
 	xVel = 0;
 	yVel = 0;
 	vel = vel.ZeroVector;
+
+	size = FVector2D(flipBook->Bounds.BoxExtent.X, flipBook->Bounds.BoxExtent.Z);
 }
 
 // Called when the game starts or when spawned
@@ -39,6 +43,7 @@ void AMainCharacter::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 	UpdatePosition(DeltaTime);
 	ApplyDampenForces(DeltaTime);
+	CollisionUtils::CheckStaticCollisions(this->GetActorLocation(), size);
 
 }
 
@@ -66,9 +71,9 @@ void AMainCharacter::UpdatePosition(float deltaTime)
 }
 void AMainCharacter::ApplyDampenForces(float deltaTime)
 {
-	//yVel -= 8 * deltaTime;
-	//yVel = MyUtils::Max(yVel, -64);
-
+	yVel -= 8 * deltaTime;
+	yVel = MyUtils::Max(yVel, -64);
+	
 	xVel -= (abs(xVel) > 0) * -MyUtils::Sign(xVel) * 2.0f* deltaTime;
 	xVel = xVel * (xVel > 0.3f);
 	vel.Set(xVel, 0, yVel);

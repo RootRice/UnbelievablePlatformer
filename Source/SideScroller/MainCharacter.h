@@ -9,6 +9,7 @@
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/Pawn.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "CollisionUtils.h"
 #include "MainCharacter.generated.h"
 
 UCLASS()
@@ -36,10 +37,12 @@ private:
 	void Move(float value);
 	void UpdatePosition(float deltaTime);
 	void ApplyDampenForces(float deltaTime);
-	UPROPERTY(VisibleAnywhere);
+	
 	FVector vel;
 	float yVel;
 	float xVel;
+
+	FVector2D size;
 
 	UPROPERTY(EditAnywhere)
 	UCapsuleComponent* capsule;
