@@ -17,17 +17,10 @@ AMainCharacter::AMainCharacter()
 	flipBook = CreateDefaultSubobject<UPaperFlipbookComponent>("SpriteSheet");
 	flipBook->SetupAttachment(capsule);
 	
-	springArm = CreateDefaultSubobject<USpringArmComponent>("SpringArm");
-	springArm->SetupAttachment(capsule);
-	
 	camera = CreateDefaultSubobject<UCameraComponent>("Camera");
-	camera->SetupAttachment(springArm);
+	camera->SetupAttachment(capsule);
 	
-	xVel = 0;
-	yVel = 0;
 	vel = vel.ZeroVector;
-
-	size = FVector2D(flipBook->Bounds.BoxExtent.X, flipBook->Bounds.BoxExtent.Z);
 }
 
 // Called when the game starts or when spawned
@@ -43,39 +36,48 @@ void AMainCharacter::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 	UpdatePosition(DeltaTime);
 	ApplyDampenForces(DeltaTime);
-	CollisionUtils::CheckStaticCollisions(this->GetActorLocation(), size);
-
 }
 
 // Called to bind functionality to input
 void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
-	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &AMainCharacter::Jump);
+	PlayerInputComponent->BindAction("CustomJump", IE_Pressed, this, &AMainCharacter::Jump);
 	PlayerInputComponent->BindAxis("CustomRun", this, &AMainCharacter::Move);
 
 }
 
 void AMainCharacter::Move(float Value)
 {
-	xVel = 5 * Value;
+	vel.X = Value * 5 * (Value != 0) + vel.X * (Value == 0);
 }
+
 
 void AMainCharacter::Jump()
 {
-	yVel = 64;
+	vel.Z = vel.Z * !grounded + jumpForce*grounded;
 }
 void AMainCharacter::UpdatePosition(float deltaTime)
 {
-	SetActorLocation(GetActorLocation() + vel);
+	grounded = false;
+	FVector offset = CollisionUtils::ResolveAAStaticCollisions(this->GetActorLocation(), size, &vel);
+	grounded = abs(vel.Z) < 0.00001f;
+	SetActorLocation(offset+this->GetActorLocation());
 }
 void AMainCharacter::ApplyDampenForces(float deltaTime)
 {
-	yVel -= 8 * deltaTime;
-	yVel = MyUtils::Max(yVel, -64);
-	
-	xVel -= (abs(xVel) > 0) * -MyUtils::Sign(xVel) * 2.0f* deltaTime;
-	xVel = xVel * (xVel > 0.3f);
-	vel.Set(xVel, 0, yVel);
+	// yVel -= 8 * deltaTime;
+	// yVel = MyUtils::Max(yVel, -64);
+	//
+	// xVel += (abs(xVel) > 0) * -MyUtils::Sign(xVel) * 20* deltaTime;
+	// xVel = xVel * (abs(xVel) > 0.3f);
+	//vel.Set(xVel, 0, yVel);
+	vel.Z -= 16*deltaTime;
+	vel.Z = MyUtils::Max(vel.Z, -64);
+
+	float xVel = vel.X;
+	xVel = (abs(xVel) > 0) * -MyUtils::Sign(xVel) * 20* deltaTime;
+	xVel = xVel * abs(xVel) > 0.3f;
+	vel.X = xVel;
 }
 

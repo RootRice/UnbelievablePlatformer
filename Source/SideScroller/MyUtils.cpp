@@ -11,12 +11,17 @@ MyUtils::~MyUtils()
 {
 }
 
-float MyUtils::Max(float x, float y)
+inline float MyUtils::Max(float x, float y)
 {
 	return (x > y) * x + (x < y) * y;
 }
 
-char MyUtils::Sign(float x)
+inline float MyUtils::Min(float x, float y)
+{
+	return (x < y) * x + (x > y) * y;
+}
+
+inline int MyUtils::Sign(float x)
 {
 	return (x > 0) - (x < 0);
 }

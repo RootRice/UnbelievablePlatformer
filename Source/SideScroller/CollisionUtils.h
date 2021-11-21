@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Containers/Array.h"
+#include "MyUtils.h"
 /**
  * 
  */
@@ -16,7 +17,9 @@ public:
 	static void AddStaticAxisAligned(FVector position, FVector2D size);
 	static void AddDynamicAxisAligned(FVector* position, FVector* size);
 
-	static void CheckStaticCollisions(FVector position, FVector2D size);
+	static int CheckAAStaticCollisions(FVector position, FVector2D size);
+	
+	static FVector ResolveAAStaticCollisions(FVector position, FVector2D size, FVector* direction);
 
 private:
 	static TArray<FVector> staticAAPos;
@@ -24,5 +27,10 @@ private:
 	
 	static TArray<FVector*> dynamicAAPos;
 	static TArray<FVector*> dynamicAASize;
+	
+	static TArray<int> collisionIndices;
+
+	static void SortVectorComponentsByLength(FVector *a, FVector *b);
+
 
 };

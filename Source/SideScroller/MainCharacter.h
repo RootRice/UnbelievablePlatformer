@@ -39,9 +39,11 @@ private:
 	void ApplyDampenForces(float deltaTime);
 	
 	FVector vel;
-	float yVel;
-	float xVel;
 
+	bool grounded;
+
+	
+	UPROPERTY(EditAnywhere)
 	FVector2D size;
 
 	UPROPERTY(EditAnywhere)

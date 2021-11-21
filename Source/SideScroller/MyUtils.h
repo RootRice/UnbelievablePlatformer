@@ -14,5 +14,6 @@ public:
 	~MyUtils();
 
 	static float Max(float x, float y);
-	static char Sign(float x);
+	static float Min(float x, float y);
+	static int Sign(float x);
 };
