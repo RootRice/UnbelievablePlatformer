@@ -20,9 +20,11 @@ AMainCharacter::AMainCharacter()
 	state.StateBegin(this, &vel);
 	states[0] = new PlayerFreeState();
 	states[0]->StateBegin(this, &vel);
-	states[1] = new PlayerAttackingState();
+	states[1] = new PlayerCrouchState();
 	states[1]->StateBegin(this, &vel);
-
+	states[2] = new PlayerAttackingState();
+	states[2]->StateBegin(this, &vel);
+	crouched = false;
 	currentState = 0;
 }
 
@@ -47,13 +49,13 @@ void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	PlayerInputComponent->BindAction("CustomJump", IE_Pressed, this, &AMainCharacter::Jump);
 	PlayerInputComponent->BindAxis("CustomRun", this, &AMainCharacter::Move);
 	PlayerInputComponent->BindAction("Attack", IE_Pressed,this, &AMainCharacter::Attack);
+	PlayerInputComponent->BindAction("Crouch", IE_Pressed,this, &AMainCharacter::Crouch);
 
 }
 
 void AMainCharacter::ManageState(char newState)
 {
 	currentState = newState;
-	UE_LOG(LogTemp, Warning, TEXT("STATE IS %i"), newState);
 }
 
 void AMainCharacter::SetAnimation(char animation)
@@ -71,6 +73,11 @@ void AMainCharacter::Attack()
 	states[currentState]->StateInput(2, 0);
 }
 
+void AMainCharacter::Crouch()
+{
+	states[currentState]->StateInput(3, grounded);
+}
+
 
 void AMainCharacter::Jump()
 {
@@ -78,10 +85,17 @@ void AMainCharacter::Jump()
 }
 void AMainCharacter::UpdatePosition(float deltaTime)
 {
+	
+	const int halfSize = int(originalSize.Y) >> 1;
+	trueSize = FVector2D(originalSize.X, halfSize + halfSize*!crouched);
+	FVector crouchAdjust(0.0f, 0.0f, (halfSize >>1)*crouched);
+	loc = this->GetActorLocation()-crouchAdjust;
+	
 	grounded = false;
-	FVector offset = CollisionUtils::ResolveAAStaticCollisions(this->GetActorLocation(), size, &vel);
+	FVector offset = CollisionUtils::ResolveAAStaticCollisions(loc, trueSize, &vel);
 	grounded = abs(vel.Z) < 0.00001f;
 	SetActorLocation(offset+this->GetActorLocation());
+	//UE_LOG(LogTemp, Warning, TEXT("Crouched: %s"), *f.ToString());
 }
 void AMainCharacter::ApplyDampenForces(float deltaTime)
 {
@@ -90,7 +104,6 @@ void AMainCharacter::ApplyDampenForces(float deltaTime)
 
 	float xVel = vel.X;
 	xVel += (abs(xVel) > 0) * -MyUtils::Sign(xVel) *20* deltaTime;
-	UE_LOG(LogTemp, Warning, TEXT("AFTER IS %f"), (abs(xVel) > 0) * -MyUtils::Sign(xVel) * deltaTime);
 	xVel = xVel * (abs(xVel) > 0.3f);
 	vel.X = xVel;
 }

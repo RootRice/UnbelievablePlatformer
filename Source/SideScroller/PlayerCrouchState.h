@@ -4,14 +4,16 @@
 
 #include "CoreMinimal.h"
 #include "PlayerBaseState.h"
+#include "MyUtils.h"
+
 /**
  * 
  */
-class SIDESCROLLER_API PlayerFreeState : public PlayerBaseState
+class SIDESCROLLER_API PlayerCrouchState : public PlayerBaseState
 {
 public:
-	PlayerFreeState();
-	~PlayerFreeState() override;
+	PlayerCrouchState();
+	~PlayerCrouchState();
 
 	virtual void StateBegin(AMainCharacter* _myCharacter, FVector* _vel) override;
 	virtual void StateTick(float elapsedTime) override;
@@ -25,9 +27,6 @@ private:
 	void Attack(float Value);
 	void Crouch(float Value);
 	void NullAction(float Value);
-	void (PlayerFreeState::*InputFncs[4])(float);
-	
-
-	
-
+	void (PlayerCrouchState::*InputFncs[4])(float);
+	float timer;
 };

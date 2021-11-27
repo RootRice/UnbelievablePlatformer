@@ -16,6 +16,7 @@ public:
 
 	static void AddStaticAxisAligned(FVector position, FVector2D size);
 	static void AddDynamicAxisAligned(FVector* position, FVector* size);
+	static void AddEnemy(FVector* position, FVector size);
 
 	static int CheckAAStaticCollisions(FVector position, FVector2D size);
 	

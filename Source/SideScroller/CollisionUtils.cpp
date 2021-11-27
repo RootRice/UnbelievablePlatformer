@@ -22,7 +22,6 @@ void CollisionUtils::AddStaticAxisAligned(FVector position, FVector2D size)
 {
 	staticAAPos.Add(position);
 	staticAASize.Add(FVector(size.X, 0.0f, size.Y));
-	UE_LOG(LogTemp, Warning, TEXT("Collision"))
 }
 
 
@@ -31,6 +30,12 @@ void CollisionUtils::AddDynamicAxisAligned(FVector* position, FVector* size)
 {
 	dynamicAAPos.Add(position);
 	dynamicAASize.Add(size);
+}
+
+void CollisionUtils::AddEnemy(FVector* position, FVector size)
+{
+	enemyAAPos.Add(position);
+	enemyAASize.Add(size);
 }
 
 int CollisionUtils::CheckAAStaticCollisions(FVector position, FVector2D _size)

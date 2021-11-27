@@ -13,6 +13,7 @@
 #include "CollisionUtils.h"
 #include "PlayerAttackingState.h"
 #include "PlayerFreeState.h"
+#include "PlayerCrouchState.h"
 #include "MainCharacter.generated.h"
 
 UCLASS()
@@ -39,25 +40,30 @@ public:
 	void SetAnimation(char animation);
 	
 	bool direction;
+	bool grounded;
+	bool crouched;
 private:
 	void Jump();
 	void Move(float value);
 	void Attack();
+	void Crouch();
 	void UpdatePosition(float deltaTime);
 	void ApplyDampenForces(float deltaTime);
 	
 	FVector vel;
+	FVector loc;
 
-	bool grounded;
 
 	char currentState;
 	char currentAnimation;
 
-	PlayerBaseState* states[2];
+	PlayerBaseState* states[3];
 	PlayerFreeState state;
 	
 	UPROPERTY(EditAnywhere)
-	FVector2D size;
+	FVector2D originalSize;
+	
+	FVector2D trueSize;
 
 	UPROPERTY(EditAnywhere)
 	UCapsuleComponent* capsule;
@@ -72,7 +78,7 @@ private:
 	UPaperFlipbookComponent* flipBook;
 
 	UPROPERTY(EditAnywhere)
-	UPaperFlipbook* flipBooks[5];
+	UPaperFlipbook* flipBooks[6];
 	
 	UPROPERTY(EditAnywhere)
 	float jumpForce;

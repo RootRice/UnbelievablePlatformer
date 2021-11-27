@@ -20,16 +20,17 @@ public:
 	virtual void StateInput(char input, float Value) override;
 	virtual void Animate() override;
 private:
-	void (PlayerAttackingState::*InputFncs[3])(float);
+	void (PlayerAttackingState::*InputFncs[4])(float);
 	void ChangeDir(float Value);
 	void NullAction(float Value);
 	void QueueAttack(float Value);
+	void Crouch(float Value);
 
 	FVector* position;
 	FVector* vel;
 	
 	FVector2D attackSize[3] = {FVector2D(200,50), FVector2D(200,50), FVector2D(200,50)};
-	float attackMomentum[3] = {1.0f, 1.5f, 2.0f};
+	float attackMomentum[3] = {0.75f, 1.5f, 0.35f};
 	char direction;
 	float attackTiming[3] = {0.5f, 0.5f, 0.5f};
 	char attackIndex;

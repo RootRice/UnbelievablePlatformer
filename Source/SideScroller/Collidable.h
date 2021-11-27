@@ -20,13 +20,7 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
-	
-private:
-	UPROPERTY(EditAnywhere)
-	bool isStatic;
-	UPROPERTY(EditAnywhere)
-	bool isAligned;
-	
+
 	UPROPERTY(EditAnywhere)
 	FVector2D SpriteSize;
 	
@@ -35,4 +29,14 @@ private:
 	
 	UPROPERTY(EditAnywhere)
 	UPaperSprite* sprite;
+	
+private:
+	UPROPERTY(EditAnywhere)
+	bool isStatic;
+	UPROPERTY(EditAnywhere)
+	bool isAligned;
+	
+	
+	
+	
 };

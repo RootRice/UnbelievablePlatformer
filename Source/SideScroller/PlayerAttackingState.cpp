@@ -15,6 +15,7 @@ PlayerAttackingState::PlayerAttackingState()
 	InputFncs[0] = &PlayerAttackingState::ChangeDir;
 	InputFncs[1] = &PlayerAttackingState::NullAction;
 	InputFncs[2] = &PlayerAttackingState::QueueAttack;
+	InputFncs[3] = &PlayerAttackingState::Crouch;
 }
 
 PlayerAttackingState::~PlayerAttackingState()
@@ -37,7 +38,7 @@ void PlayerAttackingState::StateBegin(AMainCharacter* _myCharacter, FVector* _po
 
 void PlayerAttackingState::StateTick(float ElapsedTime)
 {
-	vel->X = attackMomentum[attackIndex] *direction;
+	vel->X = attackMomentum[attackIndex] * (-1 + 2*myCharacter->direction);
 	
 	attackTimer += ElapsedTime;
 	if(attackTimer > attackTiming[attackIndex])
@@ -55,7 +56,7 @@ void PlayerAttackingState::StateInput(char Input, float Value)
 
 void PlayerAttackingState::Animate()
 {
-	char animation = attackIndex + 2;
+	char animation = attackIndex + 3;
 	myCharacter->SetAnimation(animation);
 }
 
@@ -73,7 +74,12 @@ void PlayerAttackingState::NullAction(float Value)
 void PlayerAttackingState::QueueAttack(float Value)
 {
 	const bool shouldQueue = attackTimer > 0.25f;
-	queuedState = 1 * shouldQueue + queuedState * !shouldQueue;
+	queuedState = 2 * shouldQueue + queuedState * !shouldQueue;
+}
+
+void PlayerAttackingState::Crouch(float Value)
+{
+	queuedState = 1;
 }
 
 void inline PlayerAttackingState::ProcessQueue()
@@ -82,6 +88,7 @@ void inline PlayerAttackingState::ProcessQueue()
 	myCharacter->ManageState(queuedState);
 	direction = queuedDirection;
 	myCharacter->direction = direction > 0;
+	attackIndex *= queuedState == 2;
 	queuedState = 0;
 	
 }
