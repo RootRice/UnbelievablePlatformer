@@ -25,3 +25,8 @@ inline int MyUtils::Sign(float x)
 {
 	return (x > 0) - (x < 0);
 }
+
+inline unsigned int MyUtils::LoopIndex(unsigned int index, unsigned int loopPoint)
+{
+	return index % loopPoint;
+}

@@ -7,7 +7,7 @@
 /**
  * 
  */
-static class SIDESCROLLER_API MyUtils : UObject
+static class SIDESCROLLER_API MyUtils
 {
 public:
 	MyUtils();
@@ -16,4 +16,5 @@ public:
 	static float Max(float x, float y);
 	static float Min(float x, float y);
 	static int Sign(float x);
+	static unsigned int LoopIndex(unsigned int index, unsigned int loopPoint);
 };

@@ -3,12 +3,8 @@
 
 #include "MainCharacter.h"
 
-
-
-// Sets default values
 AMainCharacter::AMainCharacter()
 {
- 	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 	capsule = CreateDefaultSubobject<UCapsuleComponent>("Capsule");
@@ -21,21 +17,27 @@ AMainCharacter::AMainCharacter()
 	camera->SetupAttachment(capsule);
 	
 	vel = vel.ZeroVector;
+	state.StateBegin(this, &vel);
+	states[0] = new PlayerFreeState();
+	states[0]->StateBegin(this, &vel);
+	states[1] = new PlayerAttackingState();
+	states[1]->StateBegin(this, &vel);
+
+	currentState = 0;
 }
 
-// Called when the game starts or when spawned
 void AMainCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
 }
 
-// Called every frame
 void AMainCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	UpdatePosition(DeltaTime);
 	ApplyDampenForces(DeltaTime);
+	states[currentState]->StateTick(DeltaTime);
+	flipBook->SetRelativeRotation(FQuat::MakeFromEuler(FVector(0.0f, 0.0f, 180.0f * direction)));
 }
 
 // Called to bind functionality to input
@@ -44,18 +46,35 @@ void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 	PlayerInputComponent->BindAction("CustomJump", IE_Pressed, this, &AMainCharacter::Jump);
 	PlayerInputComponent->BindAxis("CustomRun", this, &AMainCharacter::Move);
+	PlayerInputComponent->BindAction("Attack", IE_Pressed,this, &AMainCharacter::Attack);
 
+}
+
+void AMainCharacter::ManageState(char newState)
+{
+	currentState = newState;
+	UE_LOG(LogTemp, Warning, TEXT("STATE IS %i"), newState);
+}
+
+void AMainCharacter::SetAnimation(char animation)
+{
+	flipBook->SetFlipbook(flipBooks[animation]);
 }
 
 void AMainCharacter::Move(float Value)
 {
-	vel.X = Value * 5 * (Value != 0) + vel.X * (Value == 0);
+	states[currentState]->StateInput(0, Value * 5 * (Value != 0) + vel.X * (Value == 0));
+}
+
+void AMainCharacter::Attack()
+{
+	states[currentState]->StateInput(2, 0);
 }
 
 
 void AMainCharacter::Jump()
 {
-	vel.Z = vel.Z * !grounded + jumpForce*grounded;
+	states[currentState]->StateInput(1, !grounded + jumpForce*grounded);
 }
 void AMainCharacter::UpdatePosition(float deltaTime)
 {
@@ -66,18 +85,13 @@ void AMainCharacter::UpdatePosition(float deltaTime)
 }
 void AMainCharacter::ApplyDampenForces(float deltaTime)
 {
-	// yVel -= 8 * deltaTime;
-	// yVel = MyUtils::Max(yVel, -64);
-	//
-	// xVel += (abs(xVel) > 0) * -MyUtils::Sign(xVel) * 20* deltaTime;
-	// xVel = xVel * (abs(xVel) > 0.3f);
-	//vel.Set(xVel, 0, yVel);
 	vel.Z -= 16*deltaTime;
 	vel.Z = MyUtils::Max(vel.Z, -64);
 
 	float xVel = vel.X;
-	xVel = (abs(xVel) > 0) * -MyUtils::Sign(xVel) * 20* deltaTime;
-	xVel = xVel * abs(xVel) > 0.3f;
+	xVel += (abs(xVel) > 0) * -MyUtils::Sign(xVel) *20* deltaTime;
+	UE_LOG(LogTemp, Warning, TEXT("AFTER IS %f"), (abs(xVel) > 0) * -MyUtils::Sign(xVel) * deltaTime);
+	xVel = xVel * (abs(xVel) > 0.3f);
 	vel.X = xVel;
 }
 

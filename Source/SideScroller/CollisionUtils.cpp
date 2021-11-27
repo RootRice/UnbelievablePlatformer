@@ -15,6 +15,8 @@ TArray<FVector> CollisionUtils::staticAAPos;
 TArray<FVector> CollisionUtils::staticAASize;
 TArray<FVector*> CollisionUtils::dynamicAAPos;
 TArray<FVector*> CollisionUtils::dynamicAASize;
+TArray<FVector*> CollisionUtils::enemyAAPos;
+TArray<FVector> CollisionUtils::enemyAASize;
 
 void CollisionUtils::AddStaticAxisAligned(FVector position, FVector2D size)
 {
@@ -36,7 +38,6 @@ int CollisionUtils::CheckAAStaticCollisions(FVector position, FVector2D _size)
 	int collisionIndex = 9999;
 	FVector displacement = displacement.ZeroVector;
 	const FVector size(_size.X, 0.0f, _size.Y);
-	
 	const FVector aHalfSize = size/2;
 	const FVector aBLC(position - aHalfSize);
 	const FVector aTRC(position + aHalfSize);
@@ -109,6 +110,29 @@ FVector CollisionUtils::ResolveAAStaticCollisions(FVector position, FVector2D si
 	}
 	
 	return displacement + *direction;
+}
+
+void CollisionUtils::ResolveEnemyHit(FVector position, FVector2D size)
+{
+	const FVector aHalfSize(size.X/2, 0.0f, size.Y/2);
+	const FVector aBLC(position - aHalfSize);
+	const FVector aTRC(position + aHalfSize);
+
+	FVector bHalfSize;
+	FVector bBLC;
+	FVector bTRC;
+
+	bool collisionHit;
+	
+	for(int i = 0; i < enemyAAPos.Num(); i++)
+	{
+		bHalfSize = (enemyAASize[i]/2);
+		bBLC = *enemyAAPos[i] - bHalfSize;
+		bTRC = *enemyAAPos[i] + bHalfSize;
+
+		collisionHit = !((bBLC.X > aTRC.X) | (bTRC.X < aBLC.X));
+		collisionHit &= !((bBLC.Z > aTRC.Z) | (bTRC.Z < aBLC.Z));
+	}
 }
 
 void inline CollisionUtils::SortVectorComponentsByLength(FVector* a, FVector* b)

@@ -19,7 +19,7 @@ void ACollidable::BeginPlay()
 	{
 		if(isAligned)
 		{
-			CollisionUtils::AddStaticAxisAligned(this->GetActorLocation(), sprite->GetSourceSize());
+			CollisionUtils::AddStaticAxisAligned(this->GetActorLocation(), SpriteSize);
 		}
 		else
 		{
@@ -31,7 +31,6 @@ void ACollidable::BeginPlay()
 		if(isAligned)
 		{
 			loc = new FVector(this->GetActorLocation());
-			size = new FVector(sprite->GetSourceSize().X, 0.0f, sprite->GetSourceSize().Y);
 			CollisionUtils::AddDynamicAxisAligned(loc, size);
 		}
 		else

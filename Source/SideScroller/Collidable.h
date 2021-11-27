@@ -5,7 +5,6 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "CollisionUtils.h"
-#include "MainCharacter.h"
 #include "Paper2D/Classes/PaperSpriteActor.h"
 #include "Paper2D/Classes/PaperSprite.h"
 #include "Collidable.generated.h"
@@ -27,6 +26,9 @@ private:
 	bool isStatic;
 	UPROPERTY(EditAnywhere)
 	bool isAligned;
+	
+	UPROPERTY(EditAnywhere)
+	FVector2D SpriteSize;
 	
 	FVector* loc;
 	FVector* size;

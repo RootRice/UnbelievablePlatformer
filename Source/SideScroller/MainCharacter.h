@@ -5,11 +5,14 @@
 #include "MyUtils.h"
 #include "CoreMinimal.h"
 #include "PaperFlipbookComponent.h"
+#include "PaperFlipbook.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/Pawn.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "CollisionUtils.h"
+#include "PlayerAttackingState.h"
+#include "PlayerFreeState.h"
 #include "MainCharacter.generated.h"
 
 UCLASS()
@@ -32,9 +35,14 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	void ManageState(char newState);
+	void SetAnimation(char animation);
+	
+	bool direction;
 private:
 	void Jump();
 	void Move(float value);
+	void Attack();
 	void UpdatePosition(float deltaTime);
 	void ApplyDampenForces(float deltaTime);
 	
@@ -42,6 +50,11 @@ private:
 
 	bool grounded;
 
+	char currentState;
+	char currentAnimation;
+
+	PlayerBaseState* states[2];
+	PlayerFreeState state;
 	
 	UPROPERTY(EditAnywhere)
 	FVector2D size;
@@ -57,6 +70,9 @@ private:
 	
 	UPROPERTY(EditAnywhere)
 	UPaperFlipbookComponent* flipBook;
+
+	UPROPERTY(EditAnywhere)
+	UPaperFlipbook* flipBooks[5];
 	
 	UPROPERTY(EditAnywhere)
 	float jumpForce;

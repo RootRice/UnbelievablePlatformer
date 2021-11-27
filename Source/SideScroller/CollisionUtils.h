@@ -20,6 +20,8 @@ public:
 	static int CheckAAStaticCollisions(FVector position, FVector2D size);
 	
 	static FVector ResolveAAStaticCollisions(FVector position, FVector2D size, FVector* direction);
+	
+	static void ResolveEnemyHit(FVector position, FVector2D size);
 
 private:
 	static TArray<FVector> staticAAPos;
@@ -27,6 +29,9 @@ private:
 	
 	static TArray<FVector*> dynamicAAPos;
 	static TArray<FVector*> dynamicAASize;
+	
+	static TArray<FVector*> enemyAAPos;
+	static TArray<FVector> enemyAASize;
 	
 	static TArray<int> collisionIndices;
 
