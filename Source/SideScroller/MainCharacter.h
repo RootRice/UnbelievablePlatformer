@@ -42,6 +42,7 @@ public:
 	bool direction;
 	bool grounded;
 	bool crouched;
+	FVector loc;
 private:
 	void Jump();
 	void Move(float value);
@@ -51,7 +52,6 @@ private:
 	void ApplyDampenForces(float deltaTime);
 	
 	FVector vel;
-	FVector loc;
 
 
 	char currentState;

@@ -38,5 +38,5 @@ private:
 
 	static void SortVectorComponentsByLength(FVector *a, FVector *b);
 
-
+	static FVector* playerLoc;
 };

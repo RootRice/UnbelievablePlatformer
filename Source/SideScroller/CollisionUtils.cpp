@@ -5,6 +5,7 @@
 
 CollisionUtils::CollisionUtils()
 {
+	
 }
 
 CollisionUtils::~CollisionUtils()
@@ -139,6 +140,8 @@ void CollisionUtils::ResolveEnemyHit(FVector position, FVector2D size)
 		collisionHit &= !((bBLC.Z > aTRC.Z) | (bTRC.Z < aBLC.Z));
 	}
 }
+
+
 
 void inline CollisionUtils::SortVectorComponentsByLength(FVector* a, FVector* b)
 {
