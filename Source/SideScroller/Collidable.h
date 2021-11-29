@@ -6,11 +6,11 @@
 #include "GameFramework/Actor.h"
 #include "CollisionUtils.h"
 #include "Paper2D/Classes/PaperSpriteActor.h"
-#include "Paper2D/Classes/PaperSprite.h"
+#include "Paper2D/Classes/PaperSpriteComponent.h"
 #include "Collidable.generated.h"
 
 UCLASS()
-class SIDESCROLLER_API ACollidable : public APaperSpriteActor
+class SIDESCROLLER_API ACollidable : public AActor
 {
 	GENERATED_BODY()
 	
@@ -26,9 +26,6 @@ protected:
 	
 	FVector* loc;
 	FVector* size;
-	
-	UPROPERTY(EditAnywhere)
-	UPaperSprite* sprite;
 	
 private:
 	UPROPERTY(EditAnywhere)
