@@ -49,11 +49,6 @@ void PlayerFreeState::Move(float Value)
 	vel->X = Value;
 	const bool moving = Value != 0;
 	myCharacter->direction = (myCharacter->direction & !moving) | ((MyUtils::Sign(Value) > 0) & moving);
-	if(Value != 0)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Discrepancy: %f, %f"), Value);
-	}
-	
 }
 
 void PlayerFreeState::Jump(float Value)

@@ -86,15 +86,21 @@ void AMainCharacter::Jump()
 void AMainCharacter::UpdatePosition(float deltaTime)
 {
 	
+	const FVector actorLoc = this->GetActorLocation();
+
+	//Check crouching//
 	const int halfSize = int(originalSize.Y) >> 1;
 	trueSize = FVector2D(originalSize.X, halfSize + halfSize*!crouched);
 	FVector crouchAdjust(0.0f, 0.0f, (halfSize >>1)*crouched);
-	loc = this->GetActorLocation()-crouchAdjust;
-	
+	loc = actorLoc-crouchAdjust;
+
+	//Check collision//
 	grounded = false;
 	FVector offset = CollisionUtils::ResolveAAStaticCollisions(loc, trueSize, &vel);
 	grounded = abs(vel.Z) < 0.00001f;
-	SetActorLocation(offset+this->GetActorLocation());
+
+	//Update location//
+	SetActorLocation(offset+actorLoc);
 	//UE_LOG(LogTemp, Warning, TEXT("Crouched: %s"), *f.ToString());
 }
 void AMainCharacter::ApplyDampenForces(float deltaTime)
@@ -104,7 +110,7 @@ void AMainCharacter::ApplyDampenForces(float deltaTime)
 
 	float xVel = vel.X;
 	xVel += (abs(xVel) > 0) * -MyUtils::Sign(xVel) *20* deltaTime;
-	xVel = xVel * (abs(xVel) > 0.3f);
+	xVel = xVel * (abs(xVel) > 1.0f);
 	vel.X = xVel;
 }
 
