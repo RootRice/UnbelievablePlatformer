@@ -5,10 +5,7 @@
 #include "CoreMinimal.h"
 #include "CollisionUtils.h"
 #include "Collidable.h"
-<<<<<<< Updated upstream
-=======
 #include "PaperFlipbookComponent.h"
->>>>>>> Stashed changes
 #include "EnemyStates/EnemyBaseState.h"
 #include "EnemyStates/EnemyFreeState.h"
 #include "EnemySoldier.generated.h"
@@ -28,16 +25,11 @@ public:
 	
 	FVector vel;
 
-<<<<<<< Updated upstream
-=======
 	bool direction;
->>>>>>> Stashed changes
 protected:
 	virtual  void BeginPlay() override;
 	virtual  void Tick(float DeltaTime) override;
-
-<<<<<<< Updated upstream
-=======
+	
 	UPROPERTY(EditAnywhere)
 	float leftBounds;
 
@@ -46,7 +38,6 @@ protected:
 
 	UPROPERTY(EditAnywhere)
 	UPaperFlipbookComponent* flipBook;
->>>>>>> Stashed changes
 	
 	
 	

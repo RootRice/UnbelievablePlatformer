@@ -16,10 +16,7 @@ public:
 
 	virtual void StateBegin();
 	virtual void StateBegin(AEnemySoldier* _myEnemy, FVector* _playerLoc);
-<<<<<<< Updated upstream
-=======
 	virtual void StateBegin(AEnemySoldier* _myEnemy, FVector* _playerLoc, float leftBounds, float rightBounds);
->>>>>>> Stashed changes
 	virtual void StateTick(float elapsedTime);
 protected:
 	AEnemySoldier* myEnemy;
