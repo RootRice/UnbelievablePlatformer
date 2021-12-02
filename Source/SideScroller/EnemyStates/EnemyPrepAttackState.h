@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "EnemyStates/EnemyBaseState.h"
+#include "EnemyBaseState.h"
 
 /**
  * 
@@ -13,4 +13,10 @@ class SIDESCROLLER_API EnemyPrepAttackState : public EnemyBaseState
 public:
 	EnemyPrepAttackState();
 	~EnemyPrepAttackState();
+	
+	virtual void StateBegin(AEnemySoldier* _myEnemy, FVector* _playerLoc, float _pauseTime) override;
+	virtual  void StateTick(float elapsedTime) override;
+private:
+	float attackTimer;
+	float pauseTime;
 };

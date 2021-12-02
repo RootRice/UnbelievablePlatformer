@@ -16,8 +16,11 @@ public:
 
 	virtual void StateBegin();
 	virtual void StateBegin(AEnemySoldier* _myEnemy, FVector* _playerLoc);
+	virtual void StateBegin(AEnemySoldier* _myEnemy, FVector* _playerLoc, float _attackPrepDuration);
 	virtual void StateBegin(AEnemySoldier* _myEnemy, FVector* _playerLoc, float leftBounds, float rightBounds);
 	virtual void StateTick(float elapsedTime);
+
+	virtual void TakeDamage();
 protected:
 	AEnemySoldier* myEnemy;
 	FVector* playerLoc;

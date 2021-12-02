@@ -3,11 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "CollisionUtils.h"
 #include "Collidable.h"
 #include "PaperFlipbookComponent.h"
 #include "EnemyStates/EnemyBaseState.h"
 #include "EnemyStates/EnemyFreeState.h"
+#include "CollisionUtils.h"
 #include "EnemySoldier.generated.h"
 
 /**
@@ -22,6 +22,7 @@ public:
 	~AEnemySoldier();
 
 	void ManageStates(char newState);
+	void TakeDamage(char damage);
 	
 	FVector vel;
 
@@ -29,6 +30,8 @@ public:
 protected:
 	virtual  void BeginPlay() override;
 	virtual  void Tick(float DeltaTime) override;
+
+	
 	
 	UPROPERTY(EditAnywhere)
 	float leftBounds;
@@ -43,8 +46,17 @@ protected:
 	
 private:
 	char currentState;
-	EnemyBaseState* states[2];
+	EnemyBaseState* states[3];
 	void UpdatePosition();
 	void ApplyDampenForces(float DeltaTime);
+
+	UPROPERTY(EditAnywhere)
+	int health;
+	
+	UPROPERTY(EditAnywhere)
+	float attackCooldown;
+
+	UPROPERTY(EditAnywhere)
+	float attackPrepDuration;
 
 };

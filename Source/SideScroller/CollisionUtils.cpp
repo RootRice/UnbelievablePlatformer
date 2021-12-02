@@ -2,6 +2,7 @@
 
 
 #include "CollisionUtils.h"
+#include "EnemySoldier.h"
 
 CollisionUtils::CollisionUtils()
 {
@@ -18,6 +19,7 @@ TArray<FVector*> CollisionUtils::dynamicAAPos;
 TArray<FVector*> CollisionUtils::dynamicAASize;
 TArray<FVector*> CollisionUtils::enemyAAPos;
 TArray<FVector> CollisionUtils::enemyAASize;
+TArray<AEnemySoldier*> CollisionUtils::enemyAA;
 
 void CollisionUtils::AddStaticAxisAligned(FVector position, FVector2D size)
 {
@@ -33,10 +35,11 @@ void CollisionUtils::AddDynamicAxisAligned(FVector* position, FVector* size)
 	dynamicAASize.Add(size);
 }
 
-void CollisionUtils::AddEnemy(FVector* position, FVector size)
+void CollisionUtils::AddAAEnemy(FVector* position, FVector size, AEnemySoldier* soldier)
 {
 	enemyAAPos.Add(position);
 	enemyAASize.Add(size);
+	enemyAA.Add(soldier);
 }
 
 int CollisionUtils::CheckAAStaticCollisions(FVector position, FVector2D _size)
@@ -118,7 +121,7 @@ FVector CollisionUtils::ResolveAAStaticCollisions(FVector position, FVector2D si
 	return displacement + *direction;
 }
 
-void CollisionUtils::ResolveEnemyHit(FVector position, FVector2D size)
+void CollisionUtils::ResolveEnemyHit(FVector position, FVector2D size, char damage)
 {
 	const FVector aHalfSize(size.X/2, 0.0f, size.Y/2);
 	const FVector aBLC(position - aHalfSize);
@@ -127,18 +130,19 @@ void CollisionUtils::ResolveEnemyHit(FVector position, FVector2D size)
 	FVector bHalfSize;
 	FVector bBLC;
 	FVector bTRC;
-
+	//UE_LOG(LogTemp, Warning, TEXT("ENEMY NUM: %i"), enemyAAPos.Num());
+	//enemyAA[0]->TakeDamage(1);
 	bool collisionHit;
+	 for(int i = 0; i < enemyAAPos.Num(); i++)
+	 {
+	 	bHalfSize = (enemyAASize[0]/2);
+	 	bBLC = *enemyAAPos[0] - bHalfSize;
+	 	bTRC = *enemyAAPos[0] + bHalfSize;
 	
-	for(int i = 0; i < enemyAAPos.Num(); i++)
-	{
-		bHalfSize = (enemyAASize[i]/2);
-		bBLC = *enemyAAPos[i] - bHalfSize;
-		bTRC = *enemyAAPos[i] + bHalfSize;
-
-		collisionHit = !((bBLC.X > aTRC.X) | (bTRC.X < aBLC.X));
-		collisionHit &= !((bBLC.Z > aTRC.Z) | (bTRC.Z < aBLC.Z));
-	}
+	 	collisionHit = !((bBLC.X > aTRC.X) | (bTRC.X < aBLC.X));
+	 	collisionHit &= !((bBLC.Z > aTRC.Z) | (bTRC.Z < aBLC.Z));
+	 	enemyAA[0]->TakeDamage(damage*collisionHit);
+	 }
 }
 
 

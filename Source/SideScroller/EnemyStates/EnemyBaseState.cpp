@@ -22,12 +22,22 @@ void EnemyBaseState::StateBegin(AEnemySoldier* _myEnemy, FVector* _playerLoc)
 	
 }
 
+void EnemyBaseState::StateBegin(AEnemySoldier* _myEnemy, FVector* _playerLoc, float _attackPrepDuration)
+{
+	
+}
+
 void EnemyBaseState::StateBegin(AEnemySoldier* _myEnemy, FVector* _playerLoc, float leftBounds, float rightBounds)
 {
 	
 }
 
 void EnemyBaseState::StateTick(float elapsedTime)
+{
+	
+}
+
+void EnemyBaseState::TakeDamage()
 {
 	
 }

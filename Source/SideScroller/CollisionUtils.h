@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Containers/Array.h"
 #include "MyUtils.h"
+class AEnemySoldier;
 /**
  * 
  */
@@ -16,13 +17,13 @@ public:
 
 	static void AddStaticAxisAligned(FVector position, FVector2D size);
 	static void AddDynamicAxisAligned(FVector* position, FVector* size);
-	static void AddEnemy(FVector* position, FVector size);
+	static void AddAAEnemy(FVector* position, FVector size, AEnemySoldier* soldier);
 
 	static int CheckAAStaticCollisions(FVector position, FVector2D size);
 	
 	static FVector ResolveAAStaticCollisions(FVector position, FVector2D size, FVector* direction);
 	
-	static void ResolveEnemyHit(FVector position, FVector2D size);
+	static void ResolveEnemyHit(FVector position, FVector2D size, char damage);
 
 private:
 	static TArray<FVector> staticAAPos;
@@ -33,8 +34,8 @@ private:
 	
 	static TArray<FVector*> enemyAAPos;
 	static TArray<FVector> enemyAASize;
+	static TArray<AEnemySoldier*> enemyAA;
 	
-	static TArray<int> collisionIndices;
 
 	static void SortVectorComponentsByLength(FVector *a, FVector *b);
 

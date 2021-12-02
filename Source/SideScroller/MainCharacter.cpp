@@ -3,6 +3,8 @@
 
 #include "MainCharacter.h"
 
+#include "DrawDebugHelpers.h"
+
 AMainCharacter::AMainCharacter()
 {
 	PrimaryActorTick.bCanEverTick = true;
@@ -63,6 +65,13 @@ void AMainCharacter::SetAnimation(char animation)
 	flipBook->SetFlipbook(flipBooks[animation]);
 }
 
+FVector inline AMainCharacter::GetAttackPosition()
+{
+	FVector attackLoc = this->GetActorLocation() + (FVector(originalSize.X * 2, 0.0f, 0.0f) * (1-!direction*2));
+	DrawDebugPoint(GetWorld(), attackLoc + FVector(0, -0.1f, 0), 170,FColor(52, 220, 239), false, 2.0f);
+	return attackLoc;
+}
+
 void AMainCharacter::Move(float Value)
 {
 	states[currentState]->StateInput(0, Value * 5 * (Value != 0) + vel.X * (Value == 0));
@@ -87,7 +96,6 @@ void AMainCharacter::UpdatePosition(float deltaTime)
 {
 	
 	const FVector actorLoc = this->GetActorLocation();
-
 	//Check crouching//
 	const int halfSize = int(originalSize.Y) >> 1;
 	trueSize = FVector2D(originalSize.X, halfSize + halfSize*!crouched);

@@ -38,6 +38,7 @@ public:
 
 	void ManageState(char newState);
 	void SetAnimation(char animation);
+	FVector GetAttackPosition();
 	
 	bool direction;
 	bool grounded;
@@ -50,6 +51,7 @@ private:
 	void Crouch();
 	void UpdatePosition(float deltaTime);
 	void ApplyDampenForces(float deltaTime);
+	
 	
 	FVector vel;
 

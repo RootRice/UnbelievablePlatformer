@@ -25,11 +25,12 @@ private:
 	void NullAction(float Value);
 	void QueueAttack(float Value);
 	void Crouch(float Value);
+	void Attack();
 
 	FVector* position;
 	FVector* vel;
 	
-	FVector2D attackSize[3] = {FVector2D(200,50), FVector2D(200,50), FVector2D(200,50)};
+	FVector2D attackSize[3] = {FVector2D(170,50), FVector2D(170,50), FVector2D(170,50)};
 	float attackMomentum[3] = {0.75f, 1.5f, 0.35f};
 	char direction;
 	float attackTiming[3] = {0.5f, 0.5f, 0.5f};

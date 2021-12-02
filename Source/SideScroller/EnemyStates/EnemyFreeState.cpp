@@ -39,6 +39,14 @@ void EnemyFreeState::StateTick(float elapsedTime)
 	(this->*BehaviourFncs[currentBehaviour])();
 }
 
+void EnemyFreeState::TakeDamage()
+{
+	const float location = myEnemy->GetActorLocation().X;
+	float dir = MyUtils::Sign(location - playerLoc->X);
+	myEnemy->vel.X = 7 * dir;
+	myEnemy->vel.Y = 13;
+}
+
 void EnemyFreeState::Chase()
 {
 	

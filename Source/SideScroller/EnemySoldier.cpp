@@ -4,6 +4,7 @@
 #include "EnemySoldier.h"
 
 #include "MainCharacter.h"
+#include "EnemyStates/EnemyPrepAttackState.h"
 #include "Kismet/GameplayStatics.h"
 
 
@@ -14,7 +15,9 @@ AEnemySoldier::AEnemySoldier()
 	
 	PrimaryActorTick.bCanEverTick = true;
 	currentState = 0;
+	loc = new FVector();
 	states[0] = new EnemyFreeState();
+	states[1] = new EnemyPrepAttackState();
 }
 
 AEnemySoldier::~AEnemySoldier()
@@ -24,14 +27,11 @@ AEnemySoldier::~AEnemySoldier()
 void AEnemySoldier::BeginPlay()
 {
 	Super::BeginPlay();
-	AMainCharacter* character;
-	character = FindObject<AMainCharacter>(NULL, false);
-	CollisionUtils::AddEnemy(loc, FVector(SpriteSize.X, 0.0f, SpriteSize.Y));
-	states[0]->StateBegin(this, &character->loc);
-	CollisionUtils::AddEnemy(loc, FVector(SpriteSize.X, 0.0f, SpriteSize.Y));
+	CollisionUtils::AddAAEnemy(loc, FVector(SpriteSize.X, 0.0f, SpriteSize.Y), this);
 	APawn* pawn = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
 	AMainCharacter* MainCharacter = Cast<AMainCharacter>(pawn);
 	states[0]->StateBegin(this, &MainCharacter->loc, leftBounds, rightBounds);
+	states[1]->StateBegin(this, &MainCharacter->loc, attackPrepDuration);
 }
 
 void AEnemySoldier::Tick(float DeltaTime)
@@ -46,13 +46,21 @@ void AEnemySoldier::Tick(float DeltaTime)
 
 void AEnemySoldier::ManageStates(char newState)
 {
-	
+	currentState = newState;
+}
+
+void AEnemySoldier::TakeDamage(char damage)
+{
+	health -= damage;
+	UE_LOG(LogTemp, Warning, TEXT("HIT: %i"), damage);
+	states[currentState]->TakeDamage();
 }
 
 void AEnemySoldier::UpdatePosition()
 {
 	FVector offset = CollisionUtils::ResolveAAStaticCollisions(this->GetActorLocation(), SpriteSize, &vel);
-	this->SetActorLocation(offset+this->GetActorLocation());
+	*loc = offset+this->GetActorLocation();
+	this->SetActorLocation(*loc);
 }
 
 void AEnemySoldier::ApplyDampenForces(float DeltaTime)
@@ -63,5 +71,4 @@ void AEnemySoldier::ApplyDampenForces(float DeltaTime)
 	xVel += (abs(xVel) > 0) * -MyUtils::Sign(xVel) *20* DeltaTime;
 	xVel = xVel * (abs(xVel) > 0.3f);
 	vel.X = xVel;
-	UE_LOG(LogTemp, Warning, TEXT("CHARACTER IS AT: %f"), vel.X);
 }

@@ -46,6 +46,7 @@ void PlayerAttackingState::StateTick(float ElapsedTime)
 		attackIndex = MyUtils::LoopIndex(attackIndex+1, 3);
 		ProcessQueue();
 	}
+	Attack();
 	Animate();
 }
 
@@ -80,6 +81,11 @@ void PlayerAttackingState::QueueAttack(float Value)
 void PlayerAttackingState::Crouch(float Value)
 {
 	queuedState = 1;
+}
+
+void inline PlayerAttackingState::Attack()
+{
+	CollisionUtils::ResolveEnemyHit(myCharacter->GetAttackPosition(), attackSize[attackIndex], (5.0f * attackMomentum[attackIndex]));
 }
 
 void inline PlayerAttackingState::ProcessQueue()
