@@ -17,6 +17,11 @@ void EnemyBaseState::StateBegin()
 	
 }
 
+void EnemyBaseState::StateBegin(AEnemySoldier* _myEnemy)
+{
+	
+}
+
 void EnemyBaseState::StateBegin(AEnemySoldier* _myEnemy, FVector* _playerLoc)
 {
 	
@@ -37,9 +42,9 @@ void EnemyBaseState::StateTick(float elapsedTime)
 	
 }
 
-void EnemyBaseState::TakeDamage()
+char EnemyBaseState::TakeDamage(char damage)
 {
-	
+	return damage;
 }
 
 

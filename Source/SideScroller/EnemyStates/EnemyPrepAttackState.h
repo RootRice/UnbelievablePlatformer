@@ -16,7 +16,9 @@ public:
 	
 	virtual void StateBegin(AEnemySoldier* _myEnemy, FVector* _playerLoc, float _pauseTime) override;
 	virtual  void StateTick(float elapsedTime) override;
+	virtual  char TakeDamage(char damage) override;
 private:
 	float attackTimer;
 	float pauseTime;
+	bool attackHeight;
 };

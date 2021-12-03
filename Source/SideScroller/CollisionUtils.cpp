@@ -3,6 +3,7 @@
 
 #include "CollisionUtils.h"
 #include "EnemySoldier.h"
+#include "MainCharacter.h"
 
 CollisionUtils::CollisionUtils()
 {
@@ -11,6 +12,7 @@ CollisionUtils::CollisionUtils()
 
 CollisionUtils::~CollisionUtils()
 {
+	
 }
 
 TArray<FVector> CollisionUtils::staticAAPos;
@@ -20,6 +22,9 @@ TArray<FVector*> CollisionUtils::dynamicAASize;
 TArray<FVector*> CollisionUtils::enemyAAPos;
 TArray<FVector> CollisionUtils::enemyAASize;
 TArray<AEnemySoldier*> CollisionUtils::enemyAA;
+FVector* CollisionUtils::playerLoc;
+FVector2D* CollisionUtils::playerSize;
+AMainCharacter* CollisionUtils::player;
 
 void CollisionUtils::AddStaticAxisAligned(FVector position, FVector2D size)
 {
@@ -27,6 +32,12 @@ void CollisionUtils::AddStaticAxisAligned(FVector position, FVector2D size)
 	staticAASize.Add(FVector(size.X, 0.0f, size.Y));
 }
 
+void CollisionUtils::SetPlayer(FVector* _playerLoc, FVector2D* _playerSize, AMainCharacter* character)
+{
+	playerLoc = _playerLoc;
+	playerSize = _playerSize;
+	player = character;
+}
 
 
 void CollisionUtils::AddDynamicAxisAligned(FVector* position, FVector* size)
@@ -130,21 +141,39 @@ void CollisionUtils::ResolveEnemyHit(FVector position, FVector2D size, char dama
 	FVector bHalfSize;
 	FVector bBLC;
 	FVector bTRC;
-	//UE_LOG(LogTemp, Warning, TEXT("ENEMY NUM: %i"), enemyAAPos.Num());
-	//enemyAA[0]->TakeDamage(1);
+
 	bool collisionHit;
 	 for(int i = 0; i < enemyAAPos.Num(); i++)
 	 {
 	 	bHalfSize = (enemyAASize[0]/2);
-	 	bBLC = *enemyAAPos[0] - bHalfSize;
-	 	bTRC = *enemyAAPos[0] + bHalfSize;
+	 	bBLC = *enemyAAPos[i] - bHalfSize;
+	 	bTRC = *enemyAAPos[i] + bHalfSize;
 	
 	 	collisionHit = !((bBLC.X > aTRC.X) | (bTRC.X < aBLC.X));
 	 	collisionHit &= !((bBLC.Z > aTRC.Z) | (bTRC.Z < aBLC.Z));
-	 	enemyAA[0]->TakeDamage(damage*collisionHit);
+	 	enemyAA[i]->TakeDamage(damage*collisionHit);
 	 }
 }
 
+void CollisionUtils::ResolvePlayerHit(FVector position, FVector2D size, char damage)
+{
+	const FVector aHalfSize(size.X/2, 0.0f, size.Y/2);
+	const FVector aBLC(position - aHalfSize);
+	const FVector aTRC(position + aHalfSize);
+	
+	FVector bHalfSize = FVector(playerSize->X, 0.0f, playerSize->Y);
+	FVector bBLC = *playerLoc - bHalfSize;
+	FVector bTRC = *playerLoc + bHalfSize;
+	
+	bool collisionHit;
+	
+	
+	collisionHit = !((bBLC.X > aTRC.X) | (bTRC.X < aBLC.X));
+	collisionHit &= !((bBLC.Z > aTRC.Z) | (bTRC.Z < aBLC.Z));
+	player->TakeDamage(damage*collisionHit, position);
+	
+	
+}
 
 
 void inline CollisionUtils::SortVectorComponentsByLength(FVector* a, FVector* b)
@@ -169,5 +198,6 @@ void inline CollisionUtils::SortVectorComponentsByLength(FVector* a, FVector* b)
 	a->Z = minComponent;
 	b->Z = maxComponent;
 }
+
 
 

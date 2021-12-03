@@ -40,3 +40,8 @@ void PlayerBaseState::Animate()
 {
 	
 }
+
+char PlayerBaseState::TakeDamage(char damage)
+{
+	return damage;
+}

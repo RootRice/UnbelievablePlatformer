@@ -26,21 +26,25 @@ AMainCharacter::AMainCharacter()
 	states[1]->StateBegin(this, &vel);
 	states[2] = new PlayerAttackingState();
 	states[2]->StateBegin(this, &vel);
+	states[3] = new PlayerDamagedState();
+	states[3]->StateBegin(this, &vel);
 	crouched = false;
 	currentState = 0;
+	health = 25;
 }
 
 void AMainCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+	CollisionUtils::SetPlayer(&loc, &trueSize, this);
 }
 
-void AMainCharacter::Tick(float DeltaTime)
+void AMainCharacter::Tick(float deltaTime)
 {
-	Super::Tick(DeltaTime);
-	UpdatePosition(DeltaTime);
-	ApplyDampenForces(DeltaTime);
-	states[currentState]->StateTick(DeltaTime);
+	Super::Tick(deltaTime);
+	UpdatePosition(deltaTime);
+	ApplyDampenForces(deltaTime);
+	states[currentState]->StateTick(deltaTime);
 	flipBook->SetRelativeRotation(FQuat::MakeFromEuler(FVector(0.0f, 0.0f, 180.0f * direction)));
 }
 
@@ -68,8 +72,20 @@ void AMainCharacter::SetAnimation(char animation)
 FVector inline AMainCharacter::GetAttackPosition()
 {
 	FVector attackLoc = this->GetActorLocation() + (FVector(originalSize.X * 2, 0.0f, 0.0f) * (1-!direction*2));
-	DrawDebugPoint(GetWorld(), attackLoc + FVector(0, -0.1f, 0), 170,FColor(52, 220, 239), false, 2.0f);
+	//DrawDebugPoint(GetWorld(), attackLoc + FVector(0, -0.1f, 0), 170,FColor(52, 220, 239), false, 2.0f);
 	return attackLoc;
+}
+
+void AMainCharacter::TakeDamage(char damage, FVector damageSource)
+{
+	//DrawDebugPoint(GetWorld(), damageSource + FVector(0, -0.1f, 0), 150,FColor(52, 220, 239), false, 2.0f);
+	const char damageToTake = states[currentState]->TakeDamage(damage);
+	const char dir = MyUtils::Sign(loc.X - damageSource.X);
+	const bool shouldMove = damageToTake != 0;
+	UE_LOG(LogTemp, Warning, TEXT("damaged: %i"), shouldMove);
+	vel = FVector(4*shouldMove*dir + vel.X *!shouldMove, 0.0f, 3*shouldMove + vel.Z*!shouldMove);
+	health -= damageToTake;
+	
 }
 
 void AMainCharacter::Move(float Value)

@@ -2,33 +2,24 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
 #include "PlayerBaseState.h"
+#include "CoreMinimal.h"
+
 /**
  * 
  */
-class SIDESCROLLER_API PlayerFreeState : public PlayerBaseState
+class SIDESCROLLER_API PlayerDamagedState : public PlayerBaseState
 {
 public:
-	PlayerFreeState();
-	~PlayerFreeState() override;
+	PlayerDamagedState();
+	~PlayerDamagedState();
 
 	virtual void StateBegin(AMainCharacter* _myCharacter, FVector* _vel) override;
 	virtual void StateTick(float elapsedTime) override;
 	virtual void StateInput(char input, float Value) override;
 	virtual  void Animate() override;
 	virtual char TakeDamage(char damage) override;
-	
+
 private:
-	FVector* vel;
-	void Move(float Value);
-	void Jump(float Value);
-	void Attack(float Value);
-	void Crouch(float Value);
-	void NullAction(float Value);
-	void (PlayerFreeState::*InputFncs[4])(float);
-	
-
-	
-
+	float timer;
 };

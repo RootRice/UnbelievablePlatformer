@@ -14,6 +14,7 @@
 #include "PlayerAttackingState.h"
 #include "PlayerFreeState.h"
 #include "PlayerCrouchState.h"
+#include "PlayerDamagedState.h"
 #include "MainCharacter.generated.h"
 
 UCLASS()
@@ -39,6 +40,8 @@ public:
 	void ManageState(char newState);
 	void SetAnimation(char animation);
 	FVector GetAttackPosition();
+
+	void TakeDamage(char damage, FVector damageSource);
 	
 	bool direction;
 	bool grounded;
@@ -55,11 +58,12 @@ private:
 	
 	FVector vel;
 
+	char health;
 
 	char currentState;
 	char currentAnimation;
 
-	PlayerBaseState* states[3];
+	PlayerBaseState* states[4];
 	PlayerFreeState state;
 	
 	UPROPERTY(EditAnywhere)

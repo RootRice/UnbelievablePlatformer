@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Collidable.h"
+#include "PaperFlipbook.h"
 #include "PaperFlipbookComponent.h"
 #include "EnemyStates/EnemyBaseState.h"
 #include "EnemyStates/EnemyFreeState.h"
@@ -22,6 +23,9 @@ public:
 	~AEnemySoldier();
 
 	void ManageStates(char newState);
+	void Animate(char animation);
+	void LaunchAttack(bool height);
+	
 	void TakeDamage(char damage);
 	
 	FVector vel;
@@ -46,9 +50,12 @@ protected:
 	
 private:
 	char currentState;
-	EnemyBaseState* states[3];
+	EnemyBaseState* states[4];
 	void UpdatePosition();
 	void ApplyDampenForces(float DeltaTime);
+
+	bool damageable;
+	float invulnTimer;
 
 	UPROPERTY(EditAnywhere)
 	int health;
@@ -58,5 +65,8 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	float attackPrepDuration;
+
+	UPROPERTY(EditAnywhere)
+	UPaperFlipbook* animations[6];
 
 };

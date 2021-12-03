@@ -25,7 +25,6 @@ protected:
 	FVector2D SpriteSize;
 	
 	FVector* loc;
-	FVector* size;
 	
 private:
 	UPROPERTY(EditAnywhere)

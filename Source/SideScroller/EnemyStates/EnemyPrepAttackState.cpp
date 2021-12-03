@@ -20,13 +20,24 @@ void EnemyPrepAttackState::StateBegin(AEnemySoldier* _myEnemy, FVector* _playerL
 	myEnemy = _myEnemy;
 	playerLoc = _playerLoc;
 	pauseTime = _pauseTime;
+	attackHeight = FMath::RandBool();
 }
 
 void EnemyPrepAttackState::StateTick(float elapsedTime)
 {
 	attackTimer += elapsedTime;
-	const bool timerDone = attackTimer > pauseTime;
-	myEnemy->ManageStates(1 + (timerDone));
+	bool dir = (playerLoc->X - myEnemy->GetActorLocation().X) <= 0;
+	myEnemy->direction = dir;
+	myEnemy->Animate(2+attackHeight);
+	if(attackTimer > pauseTime)
+	{
+		myEnemy->LaunchAttack(attackHeight);
+		attackTimer = 0;
+		attackHeight = FMath::RandBool();
+	}
+}
 
-	attackTimer *= !timerDone;
+char EnemyPrepAttackState::TakeDamage(char damage)
+{
+	return 0;
 }

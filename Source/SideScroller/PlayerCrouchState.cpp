@@ -40,11 +40,17 @@ void PlayerCrouchState::Animate()
 	myCharacter->SetAnimation(2);
 }
 
+char PlayerCrouchState::TakeDamage(char damage)
+{
+	const bool damaged = damage != 0;
+	myCharacter->ManageState(3* damaged + 1 * !damaged);
+	return damage;
+}
+
 void PlayerCrouchState::Move(float Value)
 {
 	const bool shouldMove = (Value != 0) && (timer > 0.25f);
 	myCharacter->ManageState(!shouldMove);
-	UE_LOG(LogTemp, Warning, TEXT("ShouldMove: %i"), shouldMove);
 	myCharacter->crouched = !shouldMove;
 	timer *= !shouldMove;
 	Animate();

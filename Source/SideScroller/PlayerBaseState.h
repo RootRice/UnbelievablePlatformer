@@ -21,6 +21,7 @@ public:
 	virtual void StateTick(float elapsedTime);
 	virtual void StateInput(char input, float Value);
 	virtual void Animate();
+	virtual char TakeDamage(char damage);
 protected:
 	AMainCharacter* myCharacter;
 };

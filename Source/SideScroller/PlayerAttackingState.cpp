@@ -61,6 +61,14 @@ void PlayerAttackingState::Animate()
 	myCharacter->SetAnimation(animation);
 }
 
+char PlayerAttackingState::TakeDamage(char damage)
+{
+	
+	const bool damaged = damage != 0;
+	myCharacter->ManageState(3* damaged + 2 * !damaged);
+	return damage;
+}
+
 void PlayerAttackingState::ChangeDir(float Value)
 {
 	const bool Switch = abs(Value) > 0;

@@ -8,9 +8,9 @@
 EnemyFreeState::EnemyFreeState()
 {
 	currentBehaviour = 0;
-	attackTimer = 0;
-	BehaviourFncs[0] = &EnemyFreeState::Chase;
-	BehaviourFncs[1] = &EnemyFreeState::Flee;
+	attackTimer = 2;
+	BehaviourFncs[0] = &EnemyFreeState::Flee;
+	BehaviourFncs[1] = &EnemyFreeState::Chase;
 }
 
 EnemyFreeState::~EnemyFreeState()
@@ -37,26 +37,32 @@ void EnemyFreeState::StateTick(float elapsedTime)
 	attackTimer -= elapsedTime;
 	currentBehaviour = attackTimer < 0.0f;
 	(this->*BehaviourFncs[currentBehaviour])();
+	myEnemy->Animate(0);
 }
 
-void EnemyFreeState::TakeDamage()
+char EnemyFreeState::TakeDamage(char damage)
 {
+	bool damaged = damage > 0;
 	const float location = myEnemy->GetActorLocation().X;
 	float dir = MyUtils::Sign(location - playerLoc->X);
-	myEnemy->vel.X = 7 * dir;
-	myEnemy->vel.Y = 13;
+	myEnemy->vel.X = 4 * dir * damaged + myEnemy->vel.X * !damaged;
+	myEnemy->vel.Y = 26 * damaged + myEnemy->vel.Y * !damaged;
+	myEnemy->ManageStates(damaged);
+	return damage;
 }
 
 void EnemyFreeState::Chase()
 {
-	
 	const float location = myEnemy->GetActorLocation().X;
 	float speed = playerLoc->X - location;
+	const bool shouldAttack = abs(speed) < 200;
+	myEnemy->ManageStates( shouldAttack* 2);
+	attackTimer = shouldAttack *2;
 	speed = 5 * MyUtils::Sign(speed);
 	
 	bool dir = speed <= 0;
 	
-	speed *= ((location + speed) < rightBounds) && ((location + speed) > leftBounds);
+	speed *= CalculateBounds(dir, location + speed);//((location + speed) < rightBounds) && ((location + speed) > leftBounds);
 	myEnemy->vel.X = speed;
 
 	myEnemy->direction = dir;
@@ -71,9 +77,16 @@ void EnemyFreeState::Flee()
 	
 	bool dir = speed <= 0;
 	
-	speed *= ((location + speed) < rightBounds) & ((location + speed) > leftBounds);
+	speed *= CalculateBounds(dir, location + speed);//((location + speed) < rightBounds) & ((location + speed) > leftBounds);
 	myEnemy->vel.X = speed;
 
 	myEnemy->direction = dir;
 	//UE_LOG(LogTemp, Warning, TEXT("FLEEING %F"), speed);
+}
+
+bool inline EnemyFreeState::CalculateBounds(bool dir, float newLoc)
+{
+	bool leftBound = (newLoc > leftBounds) | !dir;
+	bool rightBound	 = (newLoc < rightBounds) | dir;
+	return leftBound & rightBound;
 }

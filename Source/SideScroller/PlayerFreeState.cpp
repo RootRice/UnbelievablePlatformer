@@ -44,6 +44,13 @@ void PlayerFreeState::Animate()
 	myCharacter->SetAnimation(animation);
 }
 
+char PlayerFreeState::TakeDamage(char damage)
+{
+	const bool damaged = damage != 0;
+	myCharacter->ManageState(3 * damaged);
+	return damage;
+}
+
 void PlayerFreeState::Move(float Value)
 {
 	vel->X = Value;

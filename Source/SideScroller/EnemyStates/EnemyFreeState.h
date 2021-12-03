@@ -19,7 +19,7 @@ public:
 	virtual void StateBegin(AEnemySoldier* _myEnemy, FVector* _playerLoc, float _leftBounds, float _rightBounds) override;
 	virtual void StateTick(float elapsedTime) override;
 
-	virtual void TakeDamage() override;
+	virtual char TakeDamage(char damage) override;
 
 private:
 	float attackTimer;
@@ -29,6 +29,7 @@ private:
 	char currentBehaviour;
 	void Chase();
 	void Flee();
+	bool CalculateBounds(bool dir, float newLoc);
 
 	float leftBounds;
 	float rightBounds;

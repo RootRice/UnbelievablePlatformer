@@ -19,6 +19,7 @@ public:
 	virtual void StateTick(float elapsedTime) override;
 	virtual void StateInput(char input, float Value) override;
 	virtual  void Animate() override;
+	virtual char TakeDamage(char damage) override;
 
 private:
 	FVector* vel;
