@@ -71,7 +71,7 @@ void AMainCharacter::SetAnimation(char animation)
 	flipBook->SetFlipbook(flipBooks[animation]);
 }
 
-FVector inline AMainCharacter::GetAttackPosition()
+FVector AMainCharacter::GetAttackPosition()
 {
 	FVector attackLoc = this->GetActorLocation() + (FVector(originalSize.X * 2, 0.0f, 0.0f) * (1-!direction*2));
 	//DrawDebugPoint(GetWorld(), attackLoc + FVector(0, -0.1f, 0), 100,FColor(52, 220, 239), false, 2.0f);

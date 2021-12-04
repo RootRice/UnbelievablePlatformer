@@ -7,14 +7,27 @@
 /**
  * 
  */
-static class SIDESCROLLER_API MyUtils
+class SIDESCROLLER_API MyUtils
 {
 public:
 	MyUtils();
 	~MyUtils();
 
-	static float Max(float x, float y);
-	static float Min(float x, float y);
-	static int Sign(float x);
-	static unsigned int LoopIndex(unsigned int index, unsigned int loopPoint);
+	static float Max(float x, float y)
+	{
+		return (x > y) * x + (x < y) * y;
+	}
+	static float Min(float x, float y)
+	{
+		return (x < y) * x + (x > y) * y;
+	}
+	static int Sign(float x)
+	{
+		return (x > 0) - (x < 0);
+	}
+	
+	static unsigned int LoopIndex(unsigned int index, unsigned int loopPoint)
+	{
+		return index % loopPoint;
+	}
 };
