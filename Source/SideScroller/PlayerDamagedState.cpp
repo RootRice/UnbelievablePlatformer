@@ -24,6 +24,7 @@ void PlayerDamagedState::StateTick(float elapsedTime)
 	timer += elapsedTime;
 	const bool timerUp = timer < 0.5f;
 	myCharacter->ManageState(timerUp * 3);
+	myCharacter->SetAnimation(0);
 	timer *= timerUp;
 }
 

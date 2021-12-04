@@ -4,6 +4,7 @@
 #include "MainCharacter.h"
 
 #include "DrawDebugHelpers.h"
+#include "Kismet/GameplayStatics.h"
 
 AMainCharacter::AMainCharacter()
 {
@@ -30,7 +31,7 @@ AMainCharacter::AMainCharacter()
 	states[3]->StateBegin(this, &vel);
 	crouched = false;
 	currentState = 0;
-	health = 25;
+	health = 30;
 }
 
 void AMainCharacter::BeginPlay()
@@ -56,6 +57,7 @@ void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	PlayerInputComponent->BindAxis("CustomRun", this, &AMainCharacter::Move);
 	PlayerInputComponent->BindAction("Attack", IE_Pressed,this, &AMainCharacter::Attack);
 	PlayerInputComponent->BindAction("Crouch", IE_Pressed,this, &AMainCharacter::Crouch);
+	PlayerInputComponent->BindAction("Escape", IE_Pressed,this, &AMainCharacter::Quit);
 
 }
 
@@ -72,7 +74,7 @@ void AMainCharacter::SetAnimation(char animation)
 FVector inline AMainCharacter::GetAttackPosition()
 {
 	FVector attackLoc = this->GetActorLocation() + (FVector(originalSize.X * 2, 0.0f, 0.0f) * (1-!direction*2));
-	//DrawDebugPoint(GetWorld(), attackLoc + FVector(0, -0.1f, 0), 170,FColor(52, 220, 239), false, 2.0f);
+	//DrawDebugPoint(GetWorld(), attackLoc + FVector(0, -0.1f, 0), 100,FColor(52, 220, 239), false, 2.0f);
 	return attackLoc;
 }
 
@@ -83,14 +85,18 @@ void AMainCharacter::TakeDamage(char damage, FVector damageSource)
 	const char dir = MyUtils::Sign(loc.X - damageSource.X);
 	const bool shouldMove = damageToTake != 0;
 	UE_LOG(LogTemp, Warning, TEXT("damaged: %i"), shouldMove);
-	vel = FVector(4*shouldMove*dir + vel.X *!shouldMove, 0.0f, 3*shouldMove + vel.Z*!shouldMove);
+	vel = FVector(1.2f*shouldMove*dir + vel.X *!shouldMove, 0.0f, 0.8f*shouldMove + vel.Z*!shouldMove);
 	health -= damageToTake;
-	
+	if(health < 1)
+	{
+		CollisionUtils::Reset();
+		UGameplayStatics::OpenLevel(this, FName(*GetWorld()->GetName()), false);
+	}
 }
 
 void AMainCharacter::Move(float Value)
 {
-	states[currentState]->StateInput(0, Value * 5 * (Value != 0) + vel.X * (Value == 0));
+	states[currentState]->StateInput(0, Value * 1.7f* (Value != 0) + vel.X * (Value == 0));
 }
 
 void AMainCharacter::Attack()
@@ -101,6 +107,11 @@ void AMainCharacter::Attack()
 void AMainCharacter::Crouch()
 {
 	states[currentState]->StateInput(3, grounded);
+}
+
+void AMainCharacter::Quit()
+{
+	FGenericPlatformMisc::RequestExit(false);
 }
 
 
@@ -129,11 +140,11 @@ void AMainCharacter::UpdatePosition(float deltaTime)
 }
 void AMainCharacter::ApplyDampenForces(float deltaTime)
 {
-	vel.Z -= 16*deltaTime;
+	vel.Z -= 4*deltaTime;
 	vel.Z = MyUtils::Max(vel.Z, -64);
 
 	float xVel = vel.X;
-	xVel += (abs(xVel) > 0) * -MyUtils::Sign(xVel) *20* deltaTime;
+	xVel += (abs(xVel) > 0) * -MyUtils::Sign(xVel) *4* deltaTime;
 	xVel = xVel * (abs(xVel) > 1.0f);
 	vel.X = xVel;
 }

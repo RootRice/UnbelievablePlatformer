@@ -52,6 +52,7 @@ private:
 	void Move(float value);
 	void Attack();
 	void Crouch();
+	void Quit();
 	void UpdatePosition(float deltaTime);
 	void ApplyDampenForces(float deltaTime);
 	
@@ -61,7 +62,6 @@ private:
 	char health;
 
 	char currentState;
-	char currentAnimation;
 
 	PlayerBaseState* states[4];
 	PlayerFreeState state;

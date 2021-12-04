@@ -31,8 +31,8 @@ private:
 	FVector* position;
 	FVector* vel;
 	
-	FVector2D attackSize[3] = {FVector2D(170,50), FVector2D(170,50), FVector2D(170,50)};
-	float attackMomentum[3] = {0.75f, 1.5f, 0.35f};
+	FVector2D attackSize[3] = {FVector2D(100,50), FVector2D(100,50), FVector2D(100,50)};
+	float attackMomentum[3] = {0.25f, 0.55f, 0.35f};
 	char direction;
 	float attackTiming[3] = {0.5f, 0.5f, 0.5f};
 	char attackIndex;

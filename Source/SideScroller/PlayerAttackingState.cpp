@@ -66,6 +66,8 @@ char PlayerAttackingState::TakeDamage(char damage)
 	
 	const bool damaged = damage != 0;
 	myCharacter->ManageState(3* damaged + 2 * !damaged);
+	attackTimer *= !damaged;
+	attackIndex *= !damaged;
 	return damage;
 }
 
@@ -93,7 +95,7 @@ void PlayerAttackingState::Crouch(float Value)
 
 void inline PlayerAttackingState::Attack()
 {
-	CollisionUtils::ResolveEnemyHit(myCharacter->GetAttackPosition(), attackSize[attackIndex], (5.0f * attackMomentum[attackIndex]));
+	CollisionUtils::ResolveEnemyHit(myCharacter->GetAttackPosition(), attackSize[attackIndex], (5.0f * (attackTimer > 0.25f)));
 }
 
 void inline PlayerAttackingState::ProcessQueue()

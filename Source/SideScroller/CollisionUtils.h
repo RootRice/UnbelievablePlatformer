@@ -10,7 +10,7 @@ class AEnemySoldier;
 /**
  * 
  */
-static class SIDESCROLLER_API CollisionUtils
+class SIDESCROLLER_API CollisionUtils
 {
 public:
 	CollisionUtils();
@@ -28,6 +28,10 @@ public:
 	
 	static void ResolveEnemyHit(FVector position, FVector2D size, char damage);
 	static void ResolvePlayerHit(FVector position, FVector2D size, char damage);
+
+	static bool CheckVictoryBox();
+	
+	static void Reset();
 
 private:
 	static TArray<FVector> staticAAPos;

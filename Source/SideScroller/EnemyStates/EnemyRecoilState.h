@@ -15,11 +15,12 @@ public:
 	EnemyRecoilState();
 	~EnemyRecoilState();
 
-	virtual void StateBegin(AEnemySoldier* _myEnemy, FVector* _playerLoc) override;
+	virtual void StateBegin(AEnemySoldier* _myEnemy, FVector* _playerLoc, float _recoilDuration) override;
 	virtual void StateTick(float elapsedTime) override;
 
 	virtual char TakeDamage(char damage) override;
 
 private:
 	float timer;
+	float recoilDuration;
 };

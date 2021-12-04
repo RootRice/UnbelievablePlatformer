@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "EnemyStates/EnemyBaseState.h"
+#include "EnemyBaseState.h"
 
 /**
  * 
@@ -14,11 +14,12 @@ public:
 	EnemyAttackState();
 	~EnemyAttackState();
 
-	virtual void StateBegin(AEnemySoldier* _myEnemy, FVector* _playerLoc) override;
+	virtual void StateBegin(AEnemySoldier* _myEnemy, FVector* _playerLoc, float _overSwing) override;
 	virtual void StateTick(float elapsedTime) override;
 
 	virtual char TakeDamage(char damage) override;
 
 private:
 	float attackTimer;
+	float overSwing;
 };

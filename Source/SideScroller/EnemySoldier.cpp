@@ -3,7 +3,8 @@
 
 #include "EnemySoldier.h"
 
-#include "EnemyAttackState.h"
+#include "DrawDebugHelpers.h"
+#include "EnemyStates/EnemyAttackState.h"
 #include "MainCharacter.h"
 #include "EnemyStates/EnemyPrepAttackState.h"
 #include "EnemyStates/EnemyRecoilState.h"
@@ -37,14 +38,16 @@ void AEnemySoldier::BeginPlay()
 	APawn* pawn = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
 	AMainCharacter* MainCharacter = Cast<AMainCharacter>(pawn);
 	states[0]->StateBegin(this, &MainCharacter->loc, leftBounds, rightBounds);
-	states[1]->StateBegin(this, &MainCharacter->loc);
+	states[1]->StateBegin(this, &MainCharacter->loc, invulnDuration);
 	states[2]->StateBegin(this, &MainCharacter->loc, attackPrepDuration);
-	states[3]->StateBegin(this, &MainCharacter->loc);
+	states[3]->StateBegin(this, &MainCharacter->loc, overSwing);
 }
 
 void AEnemySoldier::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	//DrawDebugPoint(GetWorld(), this->GetActorLocation(), SpriteSize.X, FColor(40, 40, 40, 255),false, 2);
 	//State management//
 	states[currentState]->StateTick(DeltaTime);
 
@@ -55,7 +58,7 @@ void AEnemySoldier::Tick(float DeltaTime)
 
 	//Damage management//
 	invulnTimer += DeltaTime;
-	damageable |= invulnTimer > 1.5f;
+	damageable |= invulnTimer > invulnDuration;
 	invulnTimer *= !damageable;
 }
 
@@ -84,6 +87,10 @@ void AEnemySoldier::TakeDamage(char damage)
 	health -= damageToTake;
 	damageable &= (damageToTake == 0);
 	invulnTimer *= !damageable;
+	if(health < 1)
+	{
+		this->Destroy();
+	}
 }
 
 void AEnemySoldier::UpdatePosition()

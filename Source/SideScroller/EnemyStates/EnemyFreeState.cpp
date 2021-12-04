@@ -45,8 +45,8 @@ char EnemyFreeState::TakeDamage(char damage)
 	bool damaged = damage > 0;
 	const float location = myEnemy->GetActorLocation().X;
 	float dir = MyUtils::Sign(location - playerLoc->X);
-	myEnemy->vel.X = 4 * dir * damaged + myEnemy->vel.X * !damaged;
-	myEnemy->vel.Y = 26 * damaged + myEnemy->vel.Y * !damaged;
+	myEnemy->vel.X = 2.75f * dir * damaged + myEnemy->vel.X * !damaged;
+	myEnemy->vel.Y = 3.5f * damaged + myEnemy->vel.Y * !damaged;
 	myEnemy->ManageStates(damaged);
 	return damage;
 }
@@ -58,7 +58,7 @@ void EnemyFreeState::Chase()
 	const bool shouldAttack = abs(speed) < 200;
 	myEnemy->ManageStates( shouldAttack* 2);
 	attackTimer = shouldAttack *2;
-	speed = 5 * MyUtils::Sign(speed);
+	speed = 1.7f * MyUtils::Sign(speed);
 	
 	bool dir = speed <= 0;
 	
@@ -73,7 +73,7 @@ void EnemyFreeState::Flee()
 
 	const float location = myEnemy->GetActorLocation().X;
 	float speed = location - playerLoc->X;
-	speed = 5 * MyUtils::Sign(speed);
+	speed = 1.7f * MyUtils::Sign(speed);
 	
 	bool dir = speed <= 0;
 	

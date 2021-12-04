@@ -14,17 +14,18 @@ EnemyRecoilState::~EnemyRecoilState()
 {
 }
 
-void EnemyRecoilState::StateBegin(AEnemySoldier* _myEnemy, FVector* _playerLoc)
+void EnemyRecoilState::StateBegin(AEnemySoldier* _myEnemy, FVector* _playerLoc, float _recoilDuration)
 {
 	myEnemy = _myEnemy;
 	playerLoc = _playerLoc;
+	recoilDuration = _recoilDuration;
 }
 
 void EnemyRecoilState::StateTick(float elapsedTime)
 {
 	timer += elapsedTime;
-	const bool timerUp = timer > 3.0f;
-	bool playerAttackable = (playerLoc->X - myEnemy->GetActorLocation().X < 200.0f);
+	const bool timerUp = timer > recoilDuration;
+	bool playerAttackable = (abs(playerLoc->X - myEnemy->GetActorLocation().X) < 200.0f);
 	bool nextState = !timerUp;
 	
 	myEnemy->ManageStates(timerUp * (playerAttackable * 2) + nextState);

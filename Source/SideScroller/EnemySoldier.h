@@ -67,6 +67,12 @@ private:
 	float attackPrepDuration;
 
 	UPROPERTY(EditAnywhere)
+	float invulnDuration;
+	
+	UPROPERTY(EditAnywhere)
+	float overSwing;
+
+	UPROPERTY(EditAnywhere)
 	UPaperFlipbook* animations[6];
 
 };

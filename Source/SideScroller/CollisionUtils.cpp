@@ -175,6 +175,37 @@ void CollisionUtils::ResolvePlayerHit(FVector position, FVector2D size, char dam
 	
 }
 
+bool CollisionUtils::CheckVictoryBox()
+{
+	const FVector aHalfSize(200, 0.0f, 200);
+	const FVector position(-820, 0, 610);
+	const FVector aBLC(position - aHalfSize);
+	const FVector aTRC(position + aHalfSize);
+	
+	FVector bHalfSize = FVector(playerSize->X, 0.0f, playerSize->Y);
+	FVector bBLC = *playerLoc - bHalfSize;
+	FVector bTRC = *playerLoc + bHalfSize;
+	
+	bool collisionHit;
+	
+	
+	collisionHit = !((bBLC.X > aTRC.X) | (bTRC.X < aBLC.X));
+	collisionHit &= !((bBLC.Z > aTRC.Z) | (bTRC.Z < aBLC.Z));
+
+	return collisionHit;
+	
+}
+
+void CollisionUtils::Reset()
+{
+	enemyAA.Empty(14);
+	enemyAAPos.Empty(14);
+	enemyAASize.Empty(14);
+
+	staticAAPos.Empty(14);
+	staticAASize.Empty(14);
+}
+
 
 void inline CollisionUtils::SortVectorComponentsByLength(FVector* a, FVector* b)
 {
